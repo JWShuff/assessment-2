@@ -1,3 +1,4 @@
+from os import remove
 from .customer import Customer
 from .video import Video
 import csv
@@ -62,6 +63,15 @@ class Inventory:
             Customer not found!
             *****
             """)
+    def customer_has_rented(self,customer, video_title):
+        if video_title not in customer.get_current_video_rentals():
+            raise Exception("""
+            *****
+            Customer hasn't rented this video!
+            *****
+            """)
+        return True
+            
 
     def rent_video(self):
         video_title = str(input("---\nEnter the video title: "))
@@ -92,48 +102,30 @@ class Inventory:
             {customer.get_name()} rented {video_title}!
             """)
             return customer
+        #Last chance exception for unexpected errors:
+        raise Exception("Something very unexpected has occurred while renting a video.")
 
     def return_video(self):
-        # Collect the title and ID:
         video_title = str(input("---\nEnter the video title: "))
         customer_id = int(input("---\nEnter the Customer's ID: "))
-        for video in self.inventory:
-            # Confirm title is a video in inventory
-            if video.get_title() == video_title:
-                # Add 1 to available copies for next use.
-                video.increment_copies_available(1)
-                for customer in self.customers:
-                    # Look up customer
-                    if customer_id == customer.get_id():
-                        # Building the replace str:
-                        remove_str = "/" + video_title
-                        current_videos = customer.get_current_video_rentals()
-                        # Confirm customer has the video rented.
-                        if remove_str not in current_videos:
-                            raise Exception("""
-                            *****
-                            Customer hasn't rented this video!
-                            *****
-                            """)
-                        # Logic to update customer's video rentals, replace with blank.
-                        updated_videos = current_videos.replace(remove_str, "")
-                        # Update the customer object
-                        customer.set_current_video_rentals(updated_videos)
-                        # Save the updated files, print success and return to main.
-                        self.save_customers()
-                        self.save_videos()
-                        print("Success!") 
-                        return customer
-                raise Exception("""
-                *****
-                Customer not found, check ID #
-                *****
-                """)
-        raise Exception("""
-        *****
-        Video not found, check spelling, or confirm inventory with manager.
-        *****
-        """)
+        video = self.check_video_in_inventory(video_title)
+        video.increment_copies_available(1)
+        customer = self.customer_lookup_by_id(customer_id)
+        remove_str = "/" + video_title
+        current_videos = customer.get_current_video_rentals()
+        # Confirm customer has the video rented.
+        if self.customer_has_rented(customer, remove_str):                
+            # Logic to update customer's video rentals, replace with blank.
+            updated_videos = current_videos.replace(remove_str, "")
+            # Update the customer object
+            customer.set_current_video_rentals(updated_videos)
+            # Save the updated files, print success and return to main.
+            self.save_customers()
+            self.save_videos()
+            print("Success!")
+            return customer
+        #Last chance exception for unexpected errors:
+        raise Exception("Something very unexpected has occurred while returning a video.")
 
     def add_customer(self):
         # this logic gets the highest id in the loaded list of customers, and increments it by one.
