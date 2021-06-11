@@ -37,7 +37,7 @@ class Inventory:
         video_title = str(input("---\nEnter the video title: "))
         customer_id = int(input("---\nEnter the Customer's ID: "))
         for video in self.inventory:
-            if video.get_title().lower() == video_title.lower():
+            if video.get_title() == video_title:
                 if video.get_copies_available() == 0: #Check for inventory
                     print ("No copies available to rent!")        
                 video.increment_copies_available(-1)
@@ -47,8 +47,8 @@ class Inventory:
                         current_videos = customer.get_current_video_rentals()
                         current_videos += f"/{video_title}"
                         customer.set_current_video_rentals(current_videos)
-                        Inventory.save_customers()
-                        Inventory.save_videos()
+                        self.save_customers()
+                        self.save_videos()
                         print(f"""
                         {customer.get_name()} rented {video_title}!
                         """)
