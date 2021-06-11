@@ -1,7 +1,5 @@
 from .inventory import Inventory
 
-
-
 class Interface:
     def __init__(self):
         self.inventory = Inventory()
@@ -35,7 +33,7 @@ class Interface:
         """))
 
     def view_inventory(self):
-        pass
+        self.inventory.view_video_inventory()
 
     def view_customer_rented_videos(self):
         pass

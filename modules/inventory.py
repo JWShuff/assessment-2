@@ -11,15 +11,22 @@ class Inventory:
         self.inventory = self.load_videos()
         self.customers = self.load_customers()
 
+    # getters
+    def view_video_inventory(self):
+        for video in self.inventory:
+            print(video)
+
+    def view_customer_rented_videos(self, id):
+        
+
     @classmethod
     def load_customers(cls):
         customers = []
         with open(customers_path) as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                print(dict(row))
                 customers.append(Customer(**dict(row)))
-
+        print("Loaded customers.")
         return customers
 
     @classmethod
@@ -28,8 +35,8 @@ class Inventory:
         with open(inventory_path) as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                print(dict(row))
                 videos.append(Video(**dict(row)))
+        print("Loaded videos.")
         return videos
 
     @classmethod
@@ -46,6 +53,7 @@ class Inventory:
                      customer.last_name,
                      customer.current_video_rentals]
                 )
+        print("Customers updated.")
 
     @classmethod
     def save_videos(cls):
@@ -61,3 +69,4 @@ class Inventory:
                      video.rating,
                      video.copies_available]
                 )
+        print("Videos updated.")
