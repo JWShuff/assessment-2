@@ -4,7 +4,6 @@ class Video():
         self.title = title
         self.rating = rating
         self.copies_available = int(copies_available)
-        print(self)
 
     def get_title(self):
         return self.title

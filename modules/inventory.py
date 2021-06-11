@@ -1,3 +1,4 @@
+from os import remove
 from .customer import Customer
 from .video import Video
 import csv
@@ -39,12 +40,19 @@ class Inventory:
         for video in self.inventory:
             if video.get_title() == video_title:
                 if video.get_copies_available() == 0: #Check for inventory
-                    print ("No copies available to rent!")        
+                    print ("No copies available to rent!")
+                    return None
                 video.increment_copies_available(-1)
                 for customer in self.customers:
                     if customer_id == customer.get_id():
                         print("Lookup Customer Success")
                         current_videos = customer.get_current_video_rentals()
+                        # Count "/" to determine # of rentals and check for max:
+                        rental_count = current_videos.count("/")
+                        print(rental_count)
+                        if rental_count >= 3:
+                            print ("Customer has reached their maximum rentals.")
+                            return None
                         current_videos += f"/{video_title}"
                         customer.set_current_video_rentals(current_videos)
                         self.save_customers()
@@ -52,27 +60,39 @@ class Inventory:
                         print(f"""
                         {customer.get_name()} rented {video_title}!
                         """)
-                        return
+                        return None
+                    print("Customer not found!")
+                    return None
     def return_video(self):
+        # Collect the title and ID:
         video_title = str(input("---\nEnter the video title: "))
         customer_id = int(input("---\nEnter the Customer's ID: "))
         for video in self.inventory:
+            # Confirm title is a video in inventory
             if video.get_title() == video_title:
+                # Add 1 to available copies for next use.
                 video.increment_copies_available(1)
                 for customer in self.customers:
+                    # Look up customer
                     if customer_id == customer.get_id():
+                        # Building the replace str:
                         remove_str = "/" + video_title
-                        print(remove_str)
                         current_videos = customer.get_current_video_rentals()
-                        print(f"before {current_videos}")
+                        # Confirm customer has the video rented.
+                        if remove_str not in current_videos:
+                            print("Customer hasn't rented this video!")
+                            return
+                        # Logic to update customer's video rentals, replace /VidTitle with blank.
                         updated_videos = current_videos.replace(remove_str, "")
-                        print(updated_videos)
+                        # Update the customer object
                         customer.set_current_video_rentals(updated_videos)
-                        print(customer)
+                        # Save the updated files, print success and return to main.
                         self.save_customers()
                         self.save_videos()
                         print("Success!") 
                         return
+                print ("Customer not found!")
+        print("Video not found!")
     @classmethod
     def load_customers(cls):
         customers = []
@@ -96,9 +116,9 @@ class Inventory:
     
     def save_customers(self):
         with open(customers_path, 'w') as csvfile:
+            header = ["id","first_name","last_name","current_video_rentals"]
             customers_csv = csv.writer(csvfile, delimiter=',')
-            header = "id,first_name,last_name,current_video_rentals"
-            customers_csv.writerow([header])
+            customers_csv.writerow([field for field in header])
             for customer in self.customers:
                 customers_csv.writerow(
                     [customer.id,
@@ -112,8 +132,8 @@ class Inventory:
     def save_videos(self):
         with open(inventory_path, 'w') as csvfile:
             inventory_csv = csv.writer(csvfile, delimiter=',')
-            header = "id,title,rating,copies_available"
-            inventory_csv.writerow([header])
+            header = ["id","title","rating","copies_available"]
+            inventory_csv.writerow([field for field in header])
             for video in self.inventory:
                 inventory_csv.writerow(
                     [video.id,
