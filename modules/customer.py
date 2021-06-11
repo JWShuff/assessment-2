@@ -26,8 +26,6 @@ class Customer():
         name += self.get_first_name() + " " + self.get_last_name()
         return name
     def get_current_video_rentals(self):
-        if len(self.current_video_rentals) == 0:
-            return None
         return self.current_video_rentals
 
     # setters

@@ -34,49 +34,64 @@ class Inventory:
         *****
         """)
 
+    def check_video_in_inventory(self, video_title):
+        for video in self.inventory:
+            if video.get_title() == video_title:
+                return video
+        raise Exception("""
+            *****
+            Video not found, check spelling, or confirm inventory with manager.
+            *****
+            """)
+
+    def video_in_stock(self, video):
+        if video.get_copies_available() > 0:
+            return True
+        raise Exception("""
+            *****
+            No copies available to rent!
+            *****
+            """)
+
+    def customer_lookup_by_id(self, query_id):
+        for customer in self.customers:
+            if customer.get_id() == query_id:
+                return customer
+        raise Exception("""
+            *****
+            Customer not found!
+            *****
+            """)
+
     def rent_video(self):
         video_title = str(input("---\nEnter the video title: "))
         customer_id = int(input("---\nEnter the Customer's ID: "))
-        for video in self.inventory:
-            if video.get_title() == video_title:
-                if video.get_copies_available() == 0: #Check for inventory
-                    raise Exception("""
-                    *****
-                    No copies available to rent!
-                    *****
-                    """)
-                video.increment_copies_available(-1)
-                for customer in self.customers:
-                    if customer_id == customer.get_id():
-                        # Get current list of rented vids:
-                        current_videos = customer.get_current_video_rentals()
-                        # Count "/" to determine # of rentals and check for max:
-                        rental_count = current_videos.count("/")
-                        # This digit could be variable
-                        if rental_count >= 3: 
-                            raise Exception("""
-                            *****
-                            Customer has reached their maximum rentals.
-                            *****
-                            """)
-                        # Add new video with proper string formatting (/)
-                        current_videos += f"/{video_title}"
-                        # Set the customer object with updated rented videos:
-                        customer.set_current_video_rentals(current_videos)
-                        #Save changes:
-                        self.save_customers()
-                        self.save_videos()
-                        print(f"""
-                        Success!
-                        {customer.get_name()} rented {video_title}!
-                        """)
-                        return customer
+        video = self.check_video_in_inventory(video_title)
+        if self.video_in_stock(video):
+            video.increment_copies_available(-1)
+            customer = self.customer_lookup_by_id(customer_id)
+            current_videos = customer.get_current_video_rentals()
+            # Count "/" to determine # of rentals and check for max:
+            rental_count = current_videos.count("/")
+            # This digit could be variable
+            if rental_count >= 3: 
                 raise Exception("""
                 *****
-                Customer not found!
+                Customer has reached their maximum rentals.
                 *****
                 """)
-
+            # Add new video with proper string formatting (/)
+            current_videos += f"/{video_title}"
+            # Set the customer object with updated rented videos:
+            customer.set_current_video_rentals(current_videos)
+            #Save changes:
+            self.save_customers()
+            self.save_videos()
+            print(f"""
+            Success!
+            {customer.get_name()} rented {video_title}!
+            """)
+            return customer
 
     def return_video(self):
         # Collect the title and ID:
