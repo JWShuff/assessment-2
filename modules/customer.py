@@ -20,17 +20,15 @@ class Customer():
         return self.first_name
     def get_last_name(self):
         return self.last_name
+    # Use when full name is desired in interpolated strings
     def get_name(self):
         name = ""
         name += self.get_first_name() + " " + self.get_last_name()
         return name
-
     def get_current_video_rentals(self):
-        if len(self.current_video_rentals) > 0:
-            return self.current_video_rentals
-        return None
-    def get_rental_limit(self):
-        return self.rental_limit
+        if len(self.current_video_rentals) == 0:
+            return None
+        return self.current_video_rentals
 
     # setters
     def set_id(self, id):
