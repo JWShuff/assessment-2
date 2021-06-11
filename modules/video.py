@@ -12,7 +12,7 @@ class Video():
         return self.copies_available
 
     def increment_copies_available(self, increment):
-        self.copies_available = self.copies_available + increment
+        self.copies_available += increment
 
     def __str__(self):
         return (f"""

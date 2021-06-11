@@ -53,7 +53,26 @@ class Inventory:
                         {customer.get_name()} rented {video_title}!
                         """)
                         return
-
+    def return_video(self):
+        video_title = str(input("---\nEnter the video title: "))
+        customer_id = int(input("---\nEnter the Customer's ID: "))
+        for video in self.inventory:
+            if video.get_title() == video_title:
+                video.increment_copies_available(1)
+                for customer in self.customers:
+                    if customer_id == customer.get_id():
+                        remove_str = "/" + video_title
+                        print(remove_str)
+                        current_videos = customer.get_current_video_rentals()
+                        print(f"before {current_videos}")
+                        updated_videos = current_videos.replace(remove_str, "")
+                        print(updated_videos)
+                        customer.set_current_video_rentals(updated_videos)
+                        print(customer)
+                        self.save_customers()
+                        self.save_videos()
+                        print("Success!") 
+                        return
     @classmethod
     def load_customers(cls):
         customers = []
@@ -78,9 +97,8 @@ class Inventory:
     def save_customers(self):
         with open(customers_path, 'w') as csvfile:
             customers_csv = csv.writer(csvfile, delimiter=',')
-            customers_csv.writerow(
-                ["id,first_name,last_name,current_video_rentals"]
-            )
+            header = "id,first_name,last_name,current_video_rentals"
+            customers_csv.writerow([header])
             for customer in self.customers:
                 customers_csv.writerow(
                     [customer.id,
@@ -94,9 +112,8 @@ class Inventory:
     def save_videos(self):
         with open(inventory_path, 'w') as csvfile:
             inventory_csv = csv.writer(csvfile, delimiter=',')
-            inventory_csv.writerow(
-                ["id, title, rating, copies_available"]
-            )
+            header = "id,title,rating,copies_available"
+            inventory_csv.writerow([header])
             for video in self.inventory:
                 inventory_csv.writerow(
                     [video.id,
