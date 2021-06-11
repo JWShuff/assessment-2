@@ -46,3 +46,18 @@ class Inventory:
                      customer.last_name,
                      customer.current_video_rentals]
                 )
+
+    @classmethod
+    def save_videos(cls):
+        with open(inventory_path, 'w') as csvfile:
+            inventory_csv = csv.writer(csvfile, delimiter=',')
+            inventory_csv.writerow(
+                ["id, title, rating, copies_available"]
+            )
+            for video in self.inventory:
+                inventory_csv.writerow(
+                    [video.id,
+                     video.title,
+                     video.rating,
+                     video.copies_available]
+                )
