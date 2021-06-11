@@ -1,10 +1,10 @@
-from os import remove
 from .customer import Customer
 from .video import Video
 import csv
 import os.path
 my_path = os.path.abspath(os.path.dirname(__file__))
-customers_path = os.path.join(my_path, "../data/customers.csv")
+# File paths for the two csv:
+customers_path = os.path.join(my_path, "../data/customers.csv") 
 inventory_path = os.path.join(my_path, "../data/inventory.csv")
 
 class Inventory:
