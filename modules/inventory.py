@@ -9,8 +9,8 @@ inventory_path = os.path.join(my_path, "../data/inventory.csv")
 
 class Inventory:
     def __init__(self):
-        self.inventory = self.load_videos()
         self.customers = self.load_customers()
+        self.inventory = self.load_videos()
 
     # Menu functions:
     def view_video_inventory(self):
@@ -71,11 +71,11 @@ class Inventory:
                         {customer.get_name()} rented {video_title}!
                         """)
                         return customer
-                    raise Exception("""
-                    *****
-                    Customer not found!
-                    *****
-                    """)
+                raise Exception("""
+                *****
+                Customer not found!
+                *****
+                """)
 
 
     def return_video(self):
@@ -142,15 +142,14 @@ class Inventory:
                     [customer.id,
                      customer.first_name,
                      customer.last_name,
-                     customer.current_video_rentals]
-                )
+                     customer.current_video_rentals])
             print("Customers updated.")
 
     # Saves videos, use after any rent/return transaction to ensure up to date inventory.
     def save_videos(self):
         with open(inventory_path, 'w') as csvfile:
             inventory_csv = csv.writer(csvfile, delimiter=',')
-            header = ["id","title","rating","copies_available"]
+            header = self.customers[0].keys() #["id","title","rating","copies_available"]
             inventory_csv.writerow([field for field in header])
             for video in self.inventory:
                 inventory_csv.writerow(

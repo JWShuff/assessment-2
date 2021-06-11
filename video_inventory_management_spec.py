@@ -1,6 +1,8 @@
 import unittest
 from modules.customer import Customer
 from modules.video import Video
+from modules.inventory import Inventory
+from modules.interface import Interface
 
 class TestCustomer(unittest.TestCase):
     def setUp(self):
@@ -12,7 +14,6 @@ class TestCustomer(unittest.TestCase):
     def test_customer_rentals(self):
         self.assertTrue(self.test_customer.get_current_video_rentals() == None)
 
-
 class TestVideo(unittest.TestCase):
     def setUp(self):
         self.test_video = Video(11, "A Nightmare on Elm Street", "R", 10)
@@ -22,6 +23,19 @@ class TestVideo(unittest.TestCase):
 
     def test_titles_available(self):
         self.assertTrue(self.test_video.get_copies_available(), 10)
+
+class TestInventory(unittest.TestCase):
+    def setUp(self):
+        self.inventory = Inventory()
+
+    def test_inventory_loads_customers(self):
+        pass
+
+class TestInterface(unittest.TestCase):
+    """Confirm interface creates succesfully."""
+    def test_interface_instantiation(self):
+        self.interface = Interface()
+        self.assertIsInstance(self.interface, type(Interface()))
 
 if __name__ == '__main__':
     unittest.main()

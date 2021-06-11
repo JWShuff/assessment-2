@@ -44,8 +44,11 @@ class Interface:
             print(e)
 
     def rent_video(self):
-        self.inventory.rent_video()
-
+        try:
+            self.inventory.rent_video()
+        except Exception as e:
+            print(e)
+            
     def return_video(self):
         try:
             self.inventory.return_video()
