@@ -12,9 +12,13 @@ class Video():
         Rating: {self.rating}
         Copies Available: {self.copies_available}
         ---""")
-        
+
+    def get_id(self):
+        return self.id
     def get_title(self):
         return self.title
+    def get_rating(self):
+        return self.rating
     def get_copies_available(self):
         return self.copies_available
 

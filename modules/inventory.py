@@ -128,7 +128,7 @@ class Inventory:
         new_last_name = input("Enter Customer's last name: ")
         print("Adding customer...\n---\n---")
         self.customers.append(Customer(new_id, new_first_name, new_last_name))
-        self.save_customers
+        self.save_customers()
         print("Customer Added and Saved!")
     
     # Saves customers to .csv use after any transaction involving customer info changing.
@@ -144,21 +144,23 @@ class Inventory:
                      customer.last_name,
                      customer.current_video_rentals])
             print("Customers updated.")
+            return None
 
     # Saves videos, use after any rent/return transaction to ensure up to date inventory.
     def save_videos(self):
         with open(inventory_path, 'w') as csvfile:
             inventory_csv = csv.writer(csvfile, delimiter=',')
-            header = self.customers[0].keys() #["id","title","rating","copies_available"]
+            header = ["id", "title", "rating", "copies_available"] 
             inventory_csv.writerow([field for field in header])
             for video in self.inventory:
                 inventory_csv.writerow(
-                    [video.id,
-                     video.title,
-                     video.rating,
-                     video.copies_available]
+                    [video.get_id(),
+                     video.get_title(),
+                     video.get_rating(),
+                     video.get_copies_available()]
                 )
         print("Videos updated.")
+        return None
 
     @classmethod
     # Loads all customers and videos from respective .csv files (pathed in import statements)
