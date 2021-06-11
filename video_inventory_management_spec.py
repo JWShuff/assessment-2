@@ -27,6 +27,7 @@ class TestVideo(unittest.TestCase):
 class TestInventory(unittest.TestCase):
     def setUp(self):
         self.inventory = Inventory()
+        self.test_video = Video(11, "A Nightmare on Elm Street", "R", 10)
 
     """
     Test assumes .csv is standardized to the backed up version.
@@ -41,7 +42,15 @@ class TestInventory(unittest.TestCase):
         self.assertIsInstance(self.inventory.view_video_inventory(), str)
 
     def test_view_customer_rented_videos(self):
+        # User input not in scope of testing.
+        # To do: Research "mock" objects to fake user input.
+        # with self.assertRaises(Exception) as context:
+        #     self.inventory.view_customer_rented_videos()
         pass
+
+    def test_helper_methods(self):
+        """Video in stock returns true if in stock:"""
+        self.assertTrue(self.inventory.video_in_stock(self.test_video), True)
 
 class TestInterface(unittest.TestCase):
     """Confirm interface creates succesfully."""
