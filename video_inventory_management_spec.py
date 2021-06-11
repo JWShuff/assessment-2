@@ -12,7 +12,7 @@ class TestCustomer(unittest.TestCase):
         self.assertTrue(self.test_customer.get_name() == "Jack Shuff")
 
     def test_customer_rentals(self):
-        self.assertTrue(self.test_customer.get_current_video_rentals() == None)
+        self.assertTrue(self.test_customer.get_current_video_rentals() == "")
 
 class TestVideo(unittest.TestCase):
     def setUp(self):
@@ -28,7 +28,19 @@ class TestInventory(unittest.TestCase):
     def setUp(self):
         self.inventory = Inventory()
 
+    """
+    Test assumes .csv is standardized to the backed up version.
+    """
     def test_inventory_loads_customers(self):
+        self.assertTrue(self.inventory.customers[0].get_name() == "Jon Young")
+
+    def test_inventory_loads_videos(self):
+        self.assertTrue(self.inventory.inventory[3].get_title(), "Sing")
+
+    def test_view_inventory_returns_str(self):
+        self.assertIsInstance(self.inventory.view_video_inventory(), str)
+
+    def test_view_customer_rented_videos(self):
         pass
 
 class TestInterface(unittest.TestCase):

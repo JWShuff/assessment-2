@@ -15,8 +15,11 @@ class Inventory:
 
     # Menu functions:
     def view_video_inventory(self):
+        video_inventory = "-----\n"
         for video in self.inventory:
-            print(video)
+            video_inventory += str(video)
+            video_inventory += "-----\n"
+        return video_inventory
 
     def view_customer_rented_videos(self):
         id = int(input("Enter Customer ID to look up their rented videos: "))
@@ -146,10 +149,10 @@ class Inventory:
             customers_csv.writerow([field for field in header])
             for customer in self.customers:
                 customers_csv.writerow(
-                    [customer.id,
-                     customer.first_name,
-                     customer.last_name,
-                     customer.current_video_rentals])
+                    [customer.get_id(),
+                     customer.get_first_name(),
+                     customer.get_last_name(),
+                     customer.get_current_video_rentals()])
             print("Customers updated.")
             return None
 

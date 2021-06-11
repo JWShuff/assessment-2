@@ -35,7 +35,7 @@ class Interface:
         """))
 
     def view_inventory(self):
-        self.inventory.view_video_inventory()
+        print(self.inventory.view_video_inventory())
 
     def view_customer_rented_videos(self):
         try:
@@ -48,7 +48,7 @@ class Interface:
             self.inventory.rent_video()
         except Exception as e:
             print(e)
-            
+
     def return_video(self):
         try:
             self.inventory.return_video()
