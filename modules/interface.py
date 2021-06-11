@@ -23,6 +23,7 @@ class Interface:
 
     def start_menu(self):
         return int(input("""
+        --------
         Welcome to Code Platoon Video!
         1. View video inventory
         2. View customer's rented videos
@@ -30,19 +31,23 @@ class Interface:
         4. Return video
         5. Add new customer
         6. Exit
+        --------
         """))
 
     def view_inventory(self):
         self.inventory.view_video_inventory()
 
     def view_customer_rented_videos(self):
-        pass
+        try:
+            self.inventory.view_customer_rented_videos()
+        except Exception as e:
+            print(e)
 
     def rent_video(self):
-        pass
+        self.inventory.rent_video()
 
     def return_video(self):
-        pass
+        self.inventory.return_video()
 
     def add_new_customer(self):
-        pass
+        self.inventory.add_customer()

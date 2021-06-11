@@ -11,13 +11,48 @@ class Inventory:
         self.inventory = self.load_videos()
         self.customers = self.load_customers()
 
-    # getters
+    # Menu functions:
     def view_video_inventory(self):
         for video in self.inventory:
             print(video)
 
-    def view_customer_rented_videos(self, id):
-        
+    def view_customer_rented_videos(self):
+        id = int(input("Enter Customer ID to look up their rented videos: "))
+        for customer in self.customers:
+            if id == customer.get_id():
+                print(f"""
+                {customer.get_name()} has rented the following videos:
+                -----
+                {customer.get_current_video_rentals()}
+                -----
+                """)
+                return customer.get_current_video_rentals()
+            raise Exception("""
+            *****
+            Customer not found, check entered ID?
+            *****
+            """)
+
+    def rent_video(self):
+        video_title = str(input("---\nEnter the video title: "))
+        customer_id = int(input("---\nEnter the Customer's ID: "))
+        for video in self.inventory:
+            if video.get_title().lower() == video_title.lower():
+                if video.get_copies_available() == 0: #Check for inventory
+                    print ("No copies available to rent!")        
+                video.increment_copies_available(-1)
+                for customer in self.customers:
+                    if customer_id == customer.get_id():
+                        print("Lookup Customer Success")
+                        current_videos = customer.get_current_video_rentals()
+                        current_videos += f"/{video_title}"
+                        customer.set_current_video_rentals(current_videos)
+                        Inventory.save_customers()
+                        Inventory.save_videos()
+                        print(f"""
+                        {customer.get_name()} rented {video_title}!
+                        """)
+                        return
 
     @classmethod
     def load_customers(cls):
@@ -39,12 +74,12 @@ class Inventory:
         print("Loaded videos.")
         return videos
 
-    @classmethod
-    def save_customers(cls):
+    
+    def save_customers(self):
         with open(customers_path, 'w') as csvfile:
             customers_csv = csv.writer(csvfile, delimiter=',')
             customers_csv.writerow(
-                ["id, first_name, last_name, current_video_rentals"]
+                ["id,first_name,last_name,current_video_rentals"]
             )
             for customer in self.customers:
                 customers_csv.writerow(
@@ -53,10 +88,10 @@ class Inventory:
                      customer.last_name,
                      customer.current_video_rentals]
                 )
-        print("Customers updated.")
+            print("Customers updated.")
 
-    @classmethod
-    def save_videos(cls):
+    
+    def save_videos(self):
         with open(inventory_path, 'w') as csvfile:
             inventory_csv = csv.writer(csvfile, delimiter=',')
             inventory_csv.writerow(

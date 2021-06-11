@@ -5,7 +5,7 @@ path = os.path.join(my_path, "../data/customers.csv")
 
 class Customer():
     def __init__(self, id, first_name, last_name, current_video_rentals = ""):
-        self.id = id
+        self.id = int(id)
         self.first_name = first_name
         self.last_name = last_name
         self.current_video_rentals = current_video_rentals
@@ -43,18 +43,4 @@ class Customer():
         self.current_video_rentals = updated_current_video_rentals
     def set_rental_limit(self, updated_rental_limit):
         self.rental_limit = updated_rental_limit
-    
-    @classmethod
-    def load_customers(cls):
-        customers = []
-        with open(path) as csvfile:
-            reader = csv.DictReader(csvfile)
-            for row in reader:
-                print(dict(row))
-                customers.append(Customer(**dict(row)))
 
-        return customers
-
-
-test = Customer(1, "Jack", "Shuff")
-print(Customer.load_customers()[4])
