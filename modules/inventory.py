@@ -45,16 +45,19 @@ class Inventory:
                 video.increment_copies_available(-1)
                 for customer in self.customers:
                     if customer_id == customer.get_id():
-                        print("Lookup Customer Success")
+                        # Get current list of rented vids:
                         current_videos = customer.get_current_video_rentals()
                         # Count "/" to determine # of rentals and check for max:
                         rental_count = current_videos.count("/")
-                        print(rental_count)
-                        if rental_count >= 3:
+                        # This digit could be variable
+                        if rental_count >= 3: 
                             print ("Customer has reached their maximum rentals.")
                             return None
+                        # Add new video with proper string formatting (/)
                         current_videos += f"/{video_title}"
+                        # Set the customer object with updated rented videos:
                         customer.set_current_video_rentals(current_videos)
+                        #Save changes:
                         self.save_customers()
                         self.save_videos()
                         print(f"""
@@ -63,6 +66,7 @@ class Inventory:
                         return None
                     print("Customer not found!")
                     return None
+
     def return_video(self):
         # Collect the title and ID:
         video_title = str(input("---\nEnter the video title: "))
@@ -93,6 +97,12 @@ class Inventory:
                         return
                 print ("Customer not found!")
         print("Video not found!")
+
+    def add_customer(self):
+        new_customer = {}
+        # this logic gets the highest id in the loaded list of customers, and increments it by one.
+        new_customer['id'] = self.customers[(len(self.customers)-1)].get_id()+1
+        print(new_customer)
     @classmethod
     def load_customers(cls):
         customers = []
