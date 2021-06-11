@@ -1,13 +1,14 @@
 import csv
 import os.path
+my_path = os.path.abspath(os.path.dirname(__file__))
+path = os.path.join(my_path, "../data/customers.csv")
 
 class Customer():
-    def __init__(self, id, first_name, last_name, current_video_rentals = "", rental_limit = 3):
+    def __init__(self, id, first_name, last_name, current_video_rentals = ""):
         self.id = id
         self.first_name = first_name
         self.last_name = last_name
         self.current_video_rentals = current_video_rentals
-        self.rental_limit = rental_limit
 
     def __str__(self):
         return f"ID: {self.id}\nName: {self.get_name()}\nRentals: {self.get_current_video_rentals()}"
@@ -44,10 +45,8 @@ class Customer():
         self.rental_limit = updated_rental_limit
     
     @classmethod
-    def objects(cls):
+    def load_customers(cls):
         customers = []
-        my_path = os.path.abspath(os.path.dirname(__file__))
-        path = os.path.join(my_path, "../data/customers.csv")
         with open(path) as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
@@ -58,4 +57,4 @@ class Customer():
 
 
 test = Customer(1, "Jack", "Shuff")
-print(Customer.objects()[4])
+print(Customer.load_customers()[4])
