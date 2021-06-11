@@ -28,6 +28,7 @@ class TestInventory(unittest.TestCase):
     def setUp(self):
         self.inventory = Inventory()
         self.test_video = Video(11, "A Nightmare on Elm Street", "R", 10)
+        self.test_customer = Customer(3, "Jack", "Shuff")
 
     """
     Test assumes .csv is standardized to the backed up version.
@@ -51,6 +52,14 @@ class TestInventory(unittest.TestCase):
     def test_helper_methods(self):
         """Video in stock returns true if in stock:"""
         self.assertTrue(self.inventory.video_in_stock(self.test_video), True)
+
+        """Customer has rented throws exception if no title match: """
+        with self.assertRaises(Exception) as context:
+            self.inventory.customer_has_rented(self.test_customer, "101 Dalmations")
+        self.assertTrue("hasn't rented" in str(context.exception))
+
+        """Customer object is returned with successful id lookup: """
+        self.assertIsInstance(self.inventory.customer_lookup_by_id(1), type(self.test_customer))
 
 class TestInterface(unittest.TestCase):
     """Confirm interface creates succesfully."""
