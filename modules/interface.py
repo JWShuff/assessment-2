@@ -47,7 +47,13 @@ class Interface:
         self.inventory.rent_video()
 
     def return_video(self):
-        self.inventory.return_video()
+        try:
+            self.inventory.return_video()
+        except Exception as e:
+            print(e)
 
     def add_new_customer(self):
-        self.inventory.add_customer()
+        try:
+            self.inventory.add_customer()
+        except Exception as e:
+            print(e)

@@ -28,11 +28,11 @@ class Inventory:
                 -----
                 """)
                 return customer.get_current_video_rentals()
-            raise Exception("""
-            *****
-            Customer not found, check entered ID?
-            *****
-            """)
+        raise Exception("""
+        *****
+        Customer not found, check entered ID?
+        *****
+        """)
 
     def rent_video(self):
         video_title = str(input("---\nEnter the video title: "))
@@ -40,8 +40,11 @@ class Inventory:
         for video in self.inventory:
             if video.get_title() == video_title:
                 if video.get_copies_available() == 0: #Check for inventory
-                    print ("No copies available to rent!")
-                    return None
+                    raise Exception("""
+                    *****
+                    No copies available to rent!
+                    *****
+                    """)
                 video.increment_copies_available(-1)
                 for customer in self.customers:
                     if customer_id == customer.get_id():
@@ -51,8 +54,11 @@ class Inventory:
                         rental_count = current_videos.count("/")
                         # This digit could be variable
                         if rental_count >= 3: 
-                            print ("Customer has reached their maximum rentals.")
-                            return None
+                            raise Exception("""
+                            *****
+                            Customer has reached their maximum rentals.
+                            *****
+                            """)
                         # Add new video with proper string formatting (/)
                         current_videos += f"/{video_title}"
                         # Set the customer object with updated rented videos:
@@ -61,11 +67,16 @@ class Inventory:
                         self.save_customers()
                         self.save_videos()
                         print(f"""
+                        Success!
                         {customer.get_name()} rented {video_title}!
                         """)
-                        return None
-                    print("Customer not found!")
-                    return None
+                        return customer
+                    raise Exception("""
+                    *****
+                    Customer not found!
+                    *****
+                    """)
+
 
     def return_video(self):
         # Collect the title and ID:
@@ -84,9 +95,12 @@ class Inventory:
                         current_videos = customer.get_current_video_rentals()
                         # Confirm customer has the video rented.
                         if remove_str not in current_videos:
-                            print("Customer hasn't rented this video!")
-                            return
-                        # Logic to update customer's video rentals, replace /VidTitle with blank.
+                            raise Exception("""
+                            *****
+                            Customer hasn't rented this video!
+                            *****
+                            """)
+                        # Logic to update customer's video rentals, replace with blank.
                         updated_videos = current_videos.replace(remove_str, "")
                         # Update the customer object
                         customer.set_current_video_rentals(updated_videos)
@@ -94,16 +108,61 @@ class Inventory:
                         self.save_customers()
                         self.save_videos()
                         print("Success!") 
-                        return
-                print ("Customer not found!")
-        print("Video not found!")
+                        return customer
+                raise Exception("""
+                *****
+                Customer not found, check ID #
+                *****
+                """)
+        raise Exception("""
+        *****
+        Video not found, check spelling, or confirm inventory with manager.
+        *****
+        """)
 
     def add_customer(self):
-        new_customer = {}
         # this logic gets the highest id in the loaded list of customers, and increments it by one.
-        new_customer['id'] = self.customers[(len(self.customers)-1)].get_id()+1
-        print(new_customer)
+        # it _*REQUIRES*_ the customers.csv to be sorted ascending by ID else ID# collision possible.
+        new_id = self.customers[(len(self.customers)-1)].get_id()+1
+        new_first_name = input("Enter Customer's first name: ")
+        new_last_name = input("Enter Customer's last name: ")
+        print("Adding customer...\n---\n---")
+        self.customers.append(Customer(new_id, new_first_name, new_last_name))
+        self.save_customers
+        print("Customer Added and Saved!")
+    
+    # Saves customers to .csv use after any transaction involving customer info changing.
+    def save_customers(self):
+        with open(customers_path, 'w') as csvfile:
+            header = ["id","first_name","last_name","current_video_rentals"]
+            customers_csv = csv.writer(csvfile, delimiter=',')
+            customers_csv.writerow([field for field in header])
+            for customer in self.customers:
+                customers_csv.writerow(
+                    [customer.id,
+                     customer.first_name,
+                     customer.last_name,
+                     customer.current_video_rentals]
+                )
+            print("Customers updated.")
+
+    # Saves videos, use after any rent/return transaction to ensure up to date inventory.
+    def save_videos(self):
+        with open(inventory_path, 'w') as csvfile:
+            inventory_csv = csv.writer(csvfile, delimiter=',')
+            header = ["id","title","rating","copies_available"]
+            inventory_csv.writerow([field for field in header])
+            for video in self.inventory:
+                inventory_csv.writerow(
+                    [video.id,
+                     video.title,
+                     video.rating,
+                     video.copies_available]
+                )
+        print("Videos updated.")
+
     @classmethod
+    # Loads all customers and videos from respective .csv files (pathed in import statements)
     def load_customers(cls):
         customers = []
         with open(customers_path) as csvfile:
@@ -120,35 +179,6 @@ class Inventory:
             reader = csv.DictReader(csvfile)
             for row in reader:
                 videos.append(Video(**dict(row)))
-        print("Loaded videos.")
+        print("Loaded inventory.")
         return videos
 
-    
-    def save_customers(self):
-        with open(customers_path, 'w') as csvfile:
-            header = ["id","first_name","last_name","current_video_rentals"]
-            customers_csv = csv.writer(csvfile, delimiter=',')
-            customers_csv.writerow([field for field in header])
-            for customer in self.customers:
-                customers_csv.writerow(
-                    [customer.id,
-                     customer.first_name,
-                     customer.last_name,
-                     customer.current_video_rentals]
-                )
-            print("Customers updated.")
-
-    
-    def save_videos(self):
-        with open(inventory_path, 'w') as csvfile:
-            inventory_csv = csv.writer(csvfile, delimiter=',')
-            header = ["id","title","rating","copies_available"]
-            inventory_csv.writerow([field for field in header])
-            for video in self.inventory:
-                inventory_csv.writerow(
-                    [video.id,
-                     video.title,
-                     video.rating,
-                     video.copies_available]
-                )
-        print("Videos updated.")
