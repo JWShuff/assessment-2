@@ -10,7 +10,7 @@ class Customer():
         self.rental_limit = rental_limit
 
     def __str__(self):
-        return f"ID: {self.id}\nName: {self.first_name} {self.last_name}\nRentals: {self.current_video_rentals if len(self.current_video_rentals)>0 else None}"
+        return f"ID: {self.id}\nName: {self.get_name()}\nRentals: {self.get_current_video_rentals()}"
 
     # getters
     def get_id(self):
@@ -25,7 +25,9 @@ class Customer():
         return name
 
     def get_current_video_rentals(self):
-        return self.current_video_rentals
+        if len(self.current_video_rentals) > 0:
+            return self.current_video_rentals
+        return None
     def get_rental_limit(self):
         return self.rental_limit
 
@@ -56,4 +58,4 @@ class Customer():
 
 
 test = Customer(1, "Jack", "Shuff")
-print(Customer.objects()[0])
+print(Customer.objects()[4])

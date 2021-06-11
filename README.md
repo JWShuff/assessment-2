@@ -46,6 +46,7 @@ Your application should allow:
   - video *by title*
   - customer *by id*
 - Adding a new customer
+  - CUSTOMERS MAY NOT HAVE THE SAME ID
   - You should not have an initial list of video rentals assigned to a newly created customer
 - Exiting the application
 
